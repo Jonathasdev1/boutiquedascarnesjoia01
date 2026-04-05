@@ -6,6 +6,11 @@ const fs = require('fs');
 const express = require("express");
 const path = require("path");
 const { db, dbPath } = require("./db");
+const {
+	isRemotePersistenceEnabled,
+	restoreSnapshotFromRemote,
+	syncSnapshotToRemote,
+} = require("./remote-persistence");
 
 // Bloco 2: inicializa a aplicacao e define a porta padrao.
 const app = express();
@@ -41,6 +46,24 @@ const logInfo = (message) => {
 	} catch (err) {
 		console.error("Falha ao gravar log em arquivo:", err.message);
 	}
+};
+
+let remoteSyncTimer = null;
+const scheduleRemoteSync = () => {
+	if (!isRemotePersistenceEnabled()) {
+		return;
+	}
+
+	if (remoteSyncTimer) {
+		clearTimeout(remoteSyncTimer);
+	}
+
+	remoteSyncTimer = setTimeout(() => {
+		remoteSyncTimer = null;
+		syncSnapshotToRemote(db).catch((error) => {
+			logInfo(`Falha ao sincronizar com Supabase: ${error.message}`);
+		});
+	}, 300);
 };
 
 const criarBackupBanco = () => {
@@ -123,6 +146,21 @@ app.use((req, res, next) => {
 		const duracaoMs = Date.now() - inicio;
 		logInfo(`${req.method} ${req.originalUrl} -> ${res.statusCode} (${duracaoMs}ms)`);
 	});
+	next();
+});
+
+// Bloco 4.3: para persistencia remota, replica catalogo/estoque apos operacoes de escrita.
+app.use((req, res, next) => {
+	res.on("finish", () => {
+		const isWriteMethod = ["POST", "PUT", "PATCH", "DELETE"].includes(req.method);
+		const isSuccessful = res.statusCode >= 200 && res.statusCode < 400;
+		const isLogin = req.originalUrl === "/admin/login";
+
+		if (isWriteMethod && isSuccessful && !isLogin) {
+			scheduleRemoteSync();
+		}
+	});
+
 	next();
 });
 
@@ -1233,7 +1271,22 @@ app.get('/api/exportar', verificarAdmin, async (req, res) => {
 });
 
 // Bloco 16: inicia o servidor e exibe URL local no terminal.
-app.listen(PORT, () => {
-	console.log(`Servidor rodando em http://localhost:${PORT}`);
-	console.log(`Painel Admin: http://localhost:${PORT}/admin`);
-});
+const startServer = async () => {
+	if (isRemotePersistenceEnabled()) {
+		try {
+			const result = await restoreSnapshotFromRemote(db);
+			logInfo(`Supabase restaurado: ${result.restored} registro(s) aplicados ao catalogo/estoque local.`);
+		} catch (error) {
+			logInfo(`Falha ao restaurar catalogo/estoque do Supabase: ${error.message}`);
+		}
+
+		scheduleRemoteSync();
+	}
+
+	app.listen(PORT, () => {
+		console.log(`Servidor rodando em http://localhost:${PORT}`);
+		console.log(`Painel Admin: http://localhost:${PORT}/admin`);
+	});
+};
+
+startServer();
