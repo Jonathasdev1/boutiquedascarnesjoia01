@@ -85,9 +85,15 @@ app.use(express.json());
 // Bloco 4: CORS simples para permitir que o frontend acesse a API.
 app.use((req, res, next) => {
 	const origin = req.headers.origin;
-	// Permite origem mesma do servidor (mesmo dominio no Render/producao)
-	const serverOrigin = req.protocol + '://' + req.headers.host;
-	const isSameOrigin = origin === serverOrigin;
+	// Permite origem do mesmo host mesmo atras de proxy (ex.: Render http interno + https externo)
+	let originHost = '';
+	try {
+		originHost = origin ? new URL(origin).host : '';
+	} catch (_) {
+		originHost = '';
+	}
+	const requestHost = String(req.headers.host || '');
+	const isSameOrigin = Boolean(originHost) && originHost === requestHost;
 	const isAllowedOrigin = origin && ALLOWED_ORIGINS.includes(origin);
 	const allowOrigin = isSameOrigin || isAllowedOrigin;
 
