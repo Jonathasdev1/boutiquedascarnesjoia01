@@ -112,23 +112,82 @@
 
   const criarCardProduto = (apiProduct) => {
     const categoria = String(apiProduct?.categoria || "geral").toLowerCase();
-    const imgSrc = CATEGORY_PLACEHOLDER_IMAGE[categoria] || CATEGORY_PLACEHOLDER_IMAGE.geral;
 
-    const card = document.createElement("div");
-    card.className = "produto";
-    card.innerHTML = `
-      <img src="${imgSrc}" alt="${apiProduct.nome}">
-      <h3>${apiProduct.nome}</h3>
-      <p class="preco">R$ ${formatCurrency(Number(apiProduct.preco || 0))} / kg</p>
-      <label>Seleção:</label>
-      <select>
-        <option value="churrasco">Corte para Churrasco</option>
-        <option value="bife">Corte para Bife</option>
-      </select>
-      <label>Peso (kg):</label>
-      <input type="number" step="0.1" min="0.1" max="10">
-      <button class="btn-comprar">Adicionar ao Carrinho</button>
-    `;
+    const container = getSectionProductsContainer(categoria);
+    const templateCard = container?.querySelector(".produto");
+
+    // Clona um card da propria secao para manter exatamente o mesmo layout/opcoes.
+    let card;
+    if (templateCard) {
+      card = templateCard.cloneNode(true);
+    } else {
+      const imgSrc = CATEGORY_PLACEHOLDER_IMAGE[categoria] || CATEGORY_PLACEHOLDER_IMAGE.geral;
+      card = document.createElement("div");
+      card.className = "produto";
+      card.innerHTML = `
+        <img src="${imgSrc}" alt="${apiProduct.nome}">
+        <h3>${apiProduct.nome}</h3>
+        <p class="preco">R$ ${formatCurrency(Number(apiProduct.preco || 0))} / kg</p>
+        <label>Seleção:</label>
+        <select>
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+        <label>Peso (kg):</label>
+        <input type="number" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      `;
+    }
+
+    const nameEl = card.querySelector("h3");
+    const priceEl = card.querySelector(".preco");
+    const imgEl = card.querySelector("img");
+    const selectEl = card.querySelector("select");
+    const inputPesoEl = card.querySelector("input[type='number']");
+    const btnComprar = card.querySelector(".btn-comprar");
+
+    if (nameEl) nameEl.innerText = apiProduct.nome;
+    if (priceEl) priceEl.innerText = `R$ ${formatCurrency(Number(apiProduct.preco || 0))} / kg`;
+    if (imgEl) imgEl.alt = apiProduct.nome;
+
+    // Evita conflito de IDs ao clonar card existente.
+    const uniqueSuffix = String(apiProduct.id || Date.now());
+    if (selectEl) {
+      selectEl.id = `corte-auto-${uniqueSuffix}`;
+      const labelSelecao = selectEl.previousElementSibling;
+      if (labelSelecao && labelSelecao.tagName === "LABEL") {
+        labelSelecao.setAttribute("for", selectEl.id);
+      }
+      selectEl.disabled = false;
+      selectEl.selectedIndex = 0;
+    }
+
+    if (inputPesoEl) {
+      inputPesoEl.id = `peso-auto-${uniqueSuffix}`;
+      const labels = Array.from(card.querySelectorAll("label"));
+      const labelPeso = labels.find((l) => /peso/i.test(l.textContent || ""));
+      if (labelPeso) {
+        labelPeso.setAttribute("for", inputPesoEl.id);
+      }
+      inputPesoEl.disabled = false;
+      inputPesoEl.value = "";
+    }
+
+    // Limpa estado visual herdado do card modelo; disponibilidade sera aplicada abaixo.
+    card.style.opacity = "";
+    card.style.filter = "";
+    if (priceEl) {
+      priceEl.style.color = "";
+      priceEl.style.fontWeight = "";
+      priceEl.style.fontSize = "";
+    }
+    if (btnComprar) {
+      btnComprar.disabled = false;
+      btnComprar.textContent = "Adicionar ao Carrinho";
+      btnComprar.style.background = "";
+      btnComprar.style.cursor = "";
+      btnComprar.title = "";
+    }
 
     card.setAttribute("data-product-id", String(apiProduct.id));
     card.setAttribute("data-product-category", categoria || "geral");
