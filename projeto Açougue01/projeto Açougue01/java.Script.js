@@ -106,10 +106,16 @@
       card.setAttribute("data-product-id", String(apiProduct.id));
       card.setAttribute("data-product-category", apiProduct.categoria || "geral");
 
-      // Bloco disponibilidade: bloqueia visualmente se ativo === false.
+      // Bloco disponibilidade: usa a disponibilidade calculada pela API.
+      // Fallback para ativo quando a API antiga nao envia o campo 'disponivel'.
       // O produto continua visivel para o cliente saber que existe,
       // mas o botao fica desabilitado e o card aparece acinzentado.
-      if (apiProduct.ativo === false) {
+      const isDisponivel =
+        typeof apiProduct.disponivel === "boolean"
+          ? apiProduct.disponivel
+          : apiProduct.ativo !== false;
+
+      if (!isDisponivel) {
         card.style.opacity = "0.5";
         card.style.filter = "grayscale(60%)";
 

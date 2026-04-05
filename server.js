@@ -192,17 +192,23 @@ const saveOrUpdateClientByPhone = ({
 	return { created: true, cliente: db.prepare(sel + " WHERE id = ?").get(info.lastInsertRowid) };
 };
 
-// Bloco 5.1: ao registrar entrada de estoque, ativa o produto automaticamente.
-// Nao bloqueia quando chega a zero — isso e decisao manual do admin.
+// Bloco 5.1: sincroniza disponibilidade pelo estoque real.
+// Regra: quantidade <= 0 => ativo = false | quantidade > 0 => ativo = true
 const syncProductAvailabilityByStock = (produtoId) => {
 	const estoque = db.prepare("SELECT quantidade FROM estoque WHERE produto_id = ?").get(produtoId);
-	if (estoque && Number(estoque.quantidade) > 0) {
-		db.prepare("UPDATE produto SET ativo = 1 WHERE id = ?").run(produtoId);
-	}
-	// Se quantidade = 0, nao altera ativo — admin decide quando bloquear
+	const ativo = estoque && Number(estoque.quantidade) > 0 ? 1 : 0;
+	db.prepare("UPDATE produto SET ativo = ? WHERE id = ?").run(ativo, produtoId);
 };
 
-// Bloco 5.2: gera numero de pedido com auto incremento ciclico de 1 a 1000.
+// Bloco 5.2: aplica a regra para todo o catalogo na inicializacao.
+const syncAllAvailabilityByStock = () => {
+	const itens = db.prepare("SELECT id FROM produto").all();
+	for (const item of itens) {
+		syncProductAvailabilityByStock(item.id);
+	}
+};
+
+// Bloco 5.3: gera numero de pedido com auto incremento ciclico de 1 a 1000.
 const getNextOrderNumber = () => {
 	const row = db.prepare("SELECT ultimo_numero FROM pedido_sequencia WHERE id = 1").get();
 	const atual = row ? Number(row.ultimo_numero) : 0;
@@ -211,9 +217,7 @@ const getNextOrderNumber = () => {
 	return proximo;
 };
 
-// Ativa todos os produtos ao subir (garante que nenhum fique bloqueado sem querer).
-// Admin pode desativar manualmente via painel.
-db.prepare("UPDATE produto SET ativo = 1 WHERE ativo = 0").run();
+syncAllAvailabilityByStock();
 
 // Bloco 6: rota web unica oficial (index do frontend).
 app.get("/", (req, res) => {
@@ -254,8 +258,36 @@ app.post('/admin/login', (req, res) => {
 
 // Bloco 8: lista todos os produtos do banco.
 app.get("/produtos", (req, res) => {
-	const produtos = db.prepare("SELECT id, nome, preco, categoria, ativo FROM produto ORDER BY id").all();
-	res.status(200).json(produtos.map((p) => ({ ...p, ativo: Boolean(p.ativo) })));
+	const produtos = db
+		.prepare(
+			`SELECT
+				p.id,
+				p.nome,
+				p.preco,
+				p.categoria,
+				p.ativo,
+				COALESCE(e.quantidade, 0) AS estoque
+			 FROM produto p
+			 LEFT JOIN estoque e ON e.produto_id = p.id
+			 ORDER BY p.id`
+		)
+		.all();
+
+	res.status(200).json(
+		produtos.map((p) => {
+			const quantidade = Number(p.estoque);
+			const ativo = Boolean(p.ativo);
+			return {
+				id: p.id,
+				nome: p.nome,
+				preco: p.preco,
+				categoria: p.categoria,
+				ativo,
+				estoque: quantidade,
+				disponivel: ativo && quantidade > 0,
+			};
+		})
+	);
 });
 
 // Bloco 8.1: sincroniza catalogo completo vindo do frontend (upsert em lote).
