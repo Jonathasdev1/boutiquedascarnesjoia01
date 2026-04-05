@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boutique das Carnes e Conveniência Joia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topo-fixo">
+    <!-- Menu de categorias -->
+    <nav class="menu">
+      <a href="#bovino">Bovino</a>
+      <a href="#suino">Suíno</a>
+      <a href="#frango">Frango</a>
+      <a href="#Rotisseria">Rotisseria</a>
+      <a href="#Conveniencia">Conveniencia</a>
+    </nav>
+
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+      <div class="carrinho">
+        <img src="imagens_projeto_acougue/Carrinho/car3.png" alt="Carrinho de Compras">
+      </div>
+
+      <h1 class="titulo-site">Boutique das Carnes e Conveniência Joia</h1>
+
+      <div class="logo">
+        <img src="imagens_projeto_acougue/Apresentacao/imagem.logo.joia.jpeg.png" alt="Logo da Boutique">
+      </div>
+    </header>
+  </div>
+
+  <!-- Carrinho (adicionado) -->
+  <div id="carrinho-container" style="display:none; position:fixed; right:20px; background:#fff; border:1px solid #ccc; padding:20px; z-index:1000; max-width:300px; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+    <h2>Seu Carrinho</h2>
+    <ul id="lista-carrinho" style="list-style:none; padding:0;"></ul>
+    <button id="btn-finalizar" style="margin-top:10px;">Finalizar Pedido</button>
+  </div>
+
+  <button id="btn-carrinho-fixo" type="button">Ir para Carrinho / Finalizar</button>
+
+  <!-- Galeria de fotos da loja -->
+  <section class="galeria-internas" aria-label="Galeria da loja">
+    <button class="slider-btn prev" type="button" aria-label="Imagem anterior">&#10094;</button>
+    <div class="slider-track">
+      <img class="slider-image ativo" src="imagens_projeto_acougue/Apresentacao/imagemloja.jpeg.jpeg" alt="Ambiente da loja">
+      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna1.jpeg.jpeg" alt="Ambiente interno 1">
+      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna2.jpeg.jpeg" alt="Ambiente interno 2">
+      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna3.jpeg.jpeg" alt="Ambiente interno 3">
+      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna4.jpeg.jpeg" alt="Ambiente interno 4">
+      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna5.jpeg" alt="Ambiente interno 5">
+    </div>
+    <button class="slider-btn next" type="button" aria-label="Próxima imagem">&#10095;</button>
+  </section>
+<!--*****************************************************************************************************-->
+  <!-- Seção Bovino -->
+  <section id="bovino" class="secao-carnes">
+    <h2>Cortes Bovinos</h2>
+    <div class="produtos">
+      <!-- Produto 1 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Contra-file.jpeg" alt="Contrafilé">
+        <h3>Contra Filé</h3>
+        <p class="preco">R$ 64,98 / kg</p>
+        <label for="corte0">Seleção:</label>
+        <select id="corte0">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso0">Peso (kg):</label>
+        <input type="number" id="peso0" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+
+      <!-- Produto 3 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Picanha.jpeg" alt="Picanha">
+        <h3>Picanha</h3>
+        <p class="preco">R$ 79,98 / kg</p>
+        <label for="corte1">Seleção:</label>
+        <select id="corte1">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso1">Peso (kg):</label>
+        <input type="number" id="peso1" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!-- Produto 4 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/maminha.jpeg" alt="maminha">
+        <h3>Maminha</h3>
+        <p class="preco">R$ 57,98 / kg</p>
+        <label for="corte2">Seleção:</label>
+        <select id="corte2">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso2">Peso (kg):</label>
+        <input type="number" id="peso2" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- Produto 5 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Fraudinha.jpeg" alt="Fraudinha">
+        <h3>Fraudinha</h3>
+        <p class="preco">R$ 49,98 / kg</p>
+        <label for="corte3">Seleção:</label>
+        <select id="corte3">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso3">Peso (kg):</label>
+        <input type="number" id="peso3" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- Produto 6 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Filet-mignon.Jpeg" alt="Filet-mignon">
+        <h3>Filet-mignon</h3>
+        <p class="preco">R$ 99,98 / kg</p>
+        <label for="corte4">Seleção:</label>
+        <select id="corte4">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso4">Peso (kg):</label>
+        <input type="number" id="peso4" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      
+
+      <!-- Produto 7 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Costela-PA.jpeg" alt="Costela-PA">
+        <h3>Costela-PA</h3>
+        <p class="preco">R$ 25,98 / kg</p>
+        <label for="corte5">Seleção:</label>
+        <select id="corte5">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso5">Peso (kg):</label>
+        <input type="number" id="peso5" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!-- Produto 8 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Costela-Ripa.jpeg" alt="Costela-Ripa">
+        <h3>Costela-Ripa</h3>
+        <p class="preco">R$ 22,98 / kg</p>
+        <label for="corte6">Seleção:</label>
+        <select id="corte6">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso6">Peso (kg):</label>
+        <input type="number" id="peso6" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!-- Produto 9 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Coxao-mole.jpeg" alt="Coxao-mole">
+        <h3>Coxao-mole</h3>
+        <p class="preco">R$ 57,98 / kg</p>
+        <label for="corte7">Seleção:</label>
+        <select id="corte7">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso7">Peso (kg):</label>
+        <input type="number" id="peso7" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- Produto 10 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Coxao-Duro.jpeg" alt="Coxao-Duro">
+        <h3>Coxao-Duro</h3>
+        <p class="preco">R$ 55,98 / kg</p>
+        <label for="corte8">Seleção:</label>
+        <select id="corte8">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso8">Peso (kg):</label>
+        <input type="number" id="peso8" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!-- Produto 11 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/Patinho.jpeg" alt="Patinho">
+        <h3>Patinho</h3>
+        <p class="preco">R$ 56,98 / kg</p>
+        <label for="corte9">Seleção:</label>
+        <select id="corte9">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso9">Peso (kg):</label>
+        <input type="number" id="peso9" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- Produto 12 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carne_Primeira/costelaRecheada.jpeg" alt="Costela Recheada">
+        <h3>Costela Recheada</h3>
+        <p class="preco">R$ 69,98 / kg</p>
+        <label for="corte10">Seleção:</label>
+        <select id="corte10">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+
+        <label for="peso10">Peso (kg):</label>
+        <input type="number" id="peso10" step="0.1" min="0.1" max="10">
+
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      
+
+      <!-- Copiar e colar estrutura para outros produtos -->
+      <!-- ... -->
+    </div>
+  </section>
+<!--*****************************************************************************************************-->
+  <!-- Seção Suíno -->
+  <section id="suino" class="secao-carnes">
+    <h2>Cortes Suínos</h2>
+    <div class="produtos">
+      <!-- 10 produtos -->
+
+        <!--produto 1 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Bisteca.jpeg" alt="Bisteca">
+        <h3>Bisteca</h3>
+        <p class="preco">R$ 28,90 / kg</p>
+        <label for="corte11">Seleção:</label>
+        <select id="corte11">
+          <option value="churrasco">Corte para Churrasco</option>
+          <option value="bife">Corte para Bife</option>
+        </select>
+        <label for="peso11">Peso (kg):</label>
+        <input type="number" id="peso11" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!--produto 2-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Costelinha.jpeg" alt="Costelinha">
+        <h3>Costelinha</h3>
+        <p class="preco">R$ 29,90 / kg</p>
+        <label for="corte12">Seleção:</label>
+        <select id="corte12">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+        </select>
+        <label for="peso12">Peso (kg):</label>
+        <input type="number" id="peso12" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 3-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/file_mignon.webp" alt="file_mignon">
+        <h3>file_mignon</h3>
+        <p class="preco">R$ 33,90 / kg</p>
+        <label for="corte13">Seleção:</label>
+        <select id="corte13">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso13">Peso (kg):</label>
+        <input type="number" id="peso13" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 4-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Panceta.jpeg" alt="Panceta">
+        <h3>Panceta</h3>
+        <p class="preco">R$ 29,90 / kg</p>
+        <label for="corte14">Seleção:</label>
+        <select id="corte14">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso14">Peso (kg):</label>
+        <input type="number" id="peso14" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 5-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Pernilc_osso.jpeg" alt="Pernilc_osso">
+        <h3>Pernilc_osso</h3>
+        <p class="preco">R$ 21,90 / kg</p>
+        <label for="corte15">Seleção:</label>
+        <select id="corte15">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso15">Peso (kg):</label>
+        <input type="number" id="peso15" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!--produto 6-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/PernilS_osso.jpeg" alt="PernilS_osso">
+        <h3>PernilS_osso</h3>
+        <p class="preco">R$ 25,90 / kg</p>
+        <label for="corte16">Seleção:</label>
+        <select id="corte16">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso16">Peso (kg):</label>
+        <input type="number" id="peso16" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 7 -->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Lombo.jpeg" alt="Lombo">
+        <h3>Lombo</h3>
+        <p class="preco">R$ 29,90 / kg</p>
+        <label for="corte17">Seleção:</label>
+        <select id="corte17">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso17">Peso (kg):</label>
+        <input type="number" id="peso17" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 8-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Ling_Fina.jpeg" alt="Ling_Fina">
+        <h3>Ling_Fina</h3>
+        <p class="preco">R$ 29,90 / kg</p>
+        <label for="corte18">Seleção:</label>
+        <select id="corte18">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso18">Peso (kg):</label>
+        <input type="number" id="peso18" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 9-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Ling_Apim.jpeg" alt="Ling_Apim">
+        <h3>Ling_Apim</h3>
+        <p class="preco">R$ 22,90 / kg</p>
+        <label for="corte19">Seleção:</label>
+        <select id="corte19">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso19">Peso (kg):</label>
+        <input type="number" id="peso19" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!--produto 10-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Carnes_Segunda/Panceta.jpeg" alt="Panceta">
+        <h3>Panceta</h3>
+        <p class="preco">R$ 29,90 / kg</p>
+        <label for="corte20">Seleção:</label>
+        <select id="corte20">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso20">Peso (kg):</label>
+        <input type="number" id="peso20" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- repita até 10 -->
+    </div>
+  </section>
+<!--*****************************************************************************************************-->
+  <!-- Seção Frango -->
+  <section id="frango" class="secao-carnes">
+    <h2>Cortes de Frango</h2>
+    <div class="produtos">
+      <!-- 10 produtos -->
+
+        <!-- produtos 1-->
+
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/Coracao.jpeg" alt="Coracao">
+        <h3>Coracao</h3>
+        <p class="preco">R$ 29,90 / kg</p>
+         <label for="corte21">Seleção:</label>
+        <select id="corte21">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso21">Peso (kg):</label>
+        <input type="number" id="peso21" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!-- produtos 2-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/Coxa_sobre_coxa.jpeg" alt="Coxa_sobre_coxa">
+        <h3>Coxa_sobre_coxa</h3>
+        <p class="preco">R$ 16,90 / kg</p>
+         <label for="corte22">Seleção:</label>
+        <select id="corte22">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso22">Peso (kg):</label>
+        <input type="number" id="peso22" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+      <!-- produtos 3-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/Coxinha.jpeg" alt="Coxinha">
+        <h3>Coxinha</h3>
+        <p class="preco">R$ 16,90 / kg</p>
+         <label for="corte23">Seleção:</label>
+        <select id="corte23">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso23">Peso (kg):</label>
+        <input type="number" id="peso23" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 4-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/PeitoC_osso.jpeg" alt="PeitoC_osso">
+        <h3>PeitoC_osso</h3>
+        <p class="preco">R$ 18,90 / kg</p>
+         <label for="corte24">Seleção:</label>
+        <select id="corte24">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso24">Peso (kg):</label>
+        <input type="number" id="peso24" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 5-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/PeitoS_osso.jpeg" alt="PeitoS_osso">
+        <h3>PeitoS_osso</h3>
+        <p class="preco">R$ 26,90 / kg</p>
+         <label for="corte25">Seleção:</label>
+        <select id="corte25">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso25">Peso (kg):</label>
+        <input type="number" id="peso25" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 6-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/Sobre_Coxa.jpeg" alt="Sobre_Coxa">
+        <h3>Sobre_Coxa</h3>
+        <p class="preco">R$ 18,90 / kg</p>
+         <label for="corte26">Seleção:</label>
+        <select id="corte26">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso26">Peso (kg):</label>
+        <input type="number" id="peso26" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 7-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/Tulipa.jpeg" alt="Tulipa">
+        <h3>Tulipa</h3>
+        <p class="preco">R$ 16,90 / kg</p>
+         <label for="corte27">Seleção:</label>
+        <select id="corte27">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso27">Peso (kg):</label>
+        <input type="number" id="peso27" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 8-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/moela.jpeg" alt="moela">
+        <h3>moela</h3>
+        <p class="preco">R$ 16,90 / kg</p>
+         <label for="corte28">Seleção:</label>
+        <select id="corte28">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso28">Peso (kg):</label>
+        <input type="number" id="peso28" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 9-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/figado.jpeg" alt="figado">
+        <h3>figado</h3>
+        <p class="preco">R$ 16,90 / kg</p>
+         <label for="corte29">Seleção:</label>
+        <select id="corte29">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso29">Peso (kg):</label>
+        <input type="number" id="peso29" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+      <!-- produtos 10-->
+         <div class="produto">
+        <img src="imagens_projeto_acougue/Pasta_Frango/pe.jpeg" alt="pe">
+        <h3>pe</h3>
+        <p class="preco">R$ 8,90 / kg</p>
+         <label for="corte30">Seleção:</label>
+        <select id="corte30">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso30">Peso (kg):</label>
+        <input type="number" id="peso30" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+
+
+
+    </div>
+  </section>
+<!--*****************************************************************************************************-->
+  <!-- Seção Rotisseria -->
+  <section id="Rotisseria" class="secao-carnes">
+    <h2>Rotisseria</h2>
+    <div class="produtos">
+
+        <!--Produto 1-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Rotisseria/Artroz_Grega.jpeg" alt="Artroz_Grega">
+        <h3>Artroz_Grega</h3>
+        <p class="preco">R$ 29,90</p>
+        <label for="corte31">Seleção:</label>
+        <select id="corte31">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso31">Peso (kg):</label>
+        <input type="number" id="peso31" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+         <!--Produto 2-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Rotisseria/Contra_assado.jpeg" alt="Contra_assado">
+        <h3>Contra_assado</h3>
+        <p class="preco">R$ 59,90</p>
+        <label for="corte32">Seleção:</label>
+        <select id="corte32">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso32">Peso (kg):</label>
+        <input type="number" id="peso32" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+         <!--Produto 3-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Rotisseria/maionese.jpeg" alt="maionese">
+        <h3>maionese</h3>
+        <p class="preco">R$ 59,90</p>
+        <label for="corte33">Seleção:</label>
+        <select id="corte33">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso33">Peso (kg):</label>
+        <input type="number" id="peso33" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+         <!--Produto 4-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Rotisseria/Picanha_assada.jpeg" alt="Picanha_assada">
+        <h3>Picanha_assada</h3>
+        <p class="preco">R$ 99,90</p>
+        <label for="corte34">Seleção:</label>
+        <select id="corte34">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso34">Peso (kg):</label>
+        <input type="number" id="peso34" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+
+
+
+    </div>
+  </section>
+
+<!--*****************************************************************************************************-->
+   <!-- Seção Conveniencia -->
+  <section id="Conveniencia" class="secao-carnes">
+    <h2>Conveniencia</h2>
+    <div class="produtos">
+
+        <!--Produtos 1-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Conveniencia/carvao.jpeg" alt="Carvão">
+        <h3>Carvão</h3>
+        <p class="preco">R$ 15,90</p>
+         <label for="corte35">Seleção:</label>
+       <!-- <select id="corte35">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso35">Peso (kg):</label>
+        <input type="number" id="peso35" step="0.1" min="0.1" max="10">-->
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+         <!--Produtos 2-->
+      <div class="produto">
+        <img src="imagens_projeto_acougue/Conveniencia/Cerveja.jpeg" alt="Cerveja">
+        <h3>Cerveja</h3>
+        <p class="preco">R$ 15,90</p>
+         <label for="corte36">Seleção:</label>
+        <!--<select id="corte36">
+          <option value="churrasco">Peça Inteira</option>
+          <option value="bife">Pedaços Para Cozinhar</option>
+          <option value="bife">Em Bifes</option>
+        </select>
+        <label for="peso36">Peso (kg):</label>-->
+        <input type="number" id="peso36" step="0.1" min="0.1" max="10">
+        <button class="btn-comprar">Adicionar ao Carrinho</button>
+      </div>
+
+
+
+
+    </div>
+  </section>
+
+
+
+<!--*****************************************************************************************************-->
+  <!-- Sobre -->
+  <section class="sobre">
+    <h2>Sobre Nós</h2>
+    <p>A Boutique das Carnes e Conveniência Joia nasceu com o objetivo de oferecer cortes nobres de carnes bovinas, suínas e frango, além de uma seção completa de conveniência para seu churrasco ou dia a dia.</p>
+  </section>
+
+  <!-- Rodapé -->
+  <footer class="rodape">
+    <p>&copy; 2025 Boutique das Carnes e Conveniência Joia - Todos os direitos reservados.</p>
+    <p>Endereço: Rua Exemplo, 123 - Taubaté/SP</p>
+    <p>Contato: (12) 99999-9999 | contato@boutiquedascarnes.com.br</p>
+  </footer>
+
+  <div id="modal-confirmacao" class="modal-confirmacao" aria-hidden="true">
+    <div class="modal-conteudo" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <h3 id="modal-titulo">Atenção</h3>
+      <p>
+        Os valores calculados são uma base do cálculo final, pois trabalhamos em kg sendo impossível mensurar valor exato.
+        No entanto, os pesos podem sofrer uma pequena variação de no máximo 75g a mais e todos os valores podem sofrer pequenas variações.
+      </p>
+      <div class="modal-acoes">
+        <button id="btn-confirmar-envio" type="button">Confirmar</button>
+        <button id="btn-cancelar-envio" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-observacao" class="modal-confirmacao" aria-hidden="true">
+    <div class="modal-conteudo" role="dialog" aria-modal="true" aria-labelledby="modal-observacao-titulo">
+      <h3 id="modal-observacao-titulo">Observações da compra</h3>
+      <textarea id="input-observacao" class="modal-textarea" placeholder="Digite aqui alguma observação (opcional)..."></textarea>
+      <div class="modal-acoes">
+        <button id="btn-enviar-observacao" type="button">Enviar</button>
+        <button id="btn-ok-observacao" type="button">OK</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+  <!-- Carregamento de configuração centralizada -->
+  <script src="config.js"></script>
+  <!-- Script principal da loja -->
+  <script src="java.Script.js"></script>
+</html>

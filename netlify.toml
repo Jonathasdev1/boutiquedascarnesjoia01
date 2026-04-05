@@ -1,0 +1,65 @@
+# Configuração de Deploy Netlify para Boutique das Carnes
+
+[build]
+  # Pasta com os arquivos estáticos do frontend
+  publish = "projeto Açougue01/projeto Açougue01"
+  # Sem build command necessário (HTML/CSS/JS puro)
+  command = ""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# REDIRECIONAMENTOS - Suporte para Single Page App (SPA)
+# ─────────────────────────────────────────────────────────────────────────────
+
+[[redirects]]
+  # Redireciona todas as routes para index.html (para manter navegação SPA)
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  # Admin pages também para index.html
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CACHE HEADERS - Otimização de performance
+# ─────────────────────────────────────────────────────────────────────────────
+
+[[headers]]
+  # Cache para assets (imagens, CSS)
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/imagens_projeto_acougue/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  # Sem cache para HTML (sempre pega versão nova)
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CONTEXT - Configuração por ambiente
+# ─────────────────────────────────────────────────────────────────────────────
+
+[context.production]
+  # Variáveis de ambiente em produção
+  # Defina via Netlify Dashboard → Settings → Environment Variables
+  # Exemplo: REACT_APP_API_URL="https://sua-api.onrender.com"
+  environment = { CONTEXT = "production" }
+
+[context.deploy-preview]
+  environment = { CONTEXT = "deploy-preview" }
+
+[context.branch-deploy]
+  environment = { CONTEXT = "branch-deploy" }
