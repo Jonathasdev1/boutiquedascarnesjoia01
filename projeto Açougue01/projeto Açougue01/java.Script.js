@@ -69,6 +69,54 @@
       .replace(/[^a-z0-9]/g, "");
   };
 
+  const CATEGORY_SECTION_ID = {
+    bovino: "bovino",
+    suino: "suino",
+    frango: "frango",
+    rotisseria: "Rotisseria",
+    conveniencia: "Conveniencia",
+  };
+
+  const CATEGORY_PLACEHOLDER_IMAGE = {
+    bovino: "imagens_projeto_acougue/Carne_Primeira/Contra-file.jpeg",
+    suino: "imagens_projeto_acougue/Carnes_Segunda/Bisteca.jpeg",
+    frango: "imagens_projeto_acougue/Pasta_Frango/coxasobrecoxa.jpeg",
+    rotisseria: "imagens_projeto_acougue/Rotisseria/costelaRecheadaAssada.jpeg",
+    conveniencia: "imagens_projeto_acougue/Conveniencia/Oleo.jpeg",
+    geral: "imagens_projeto_acougue/Apresentacao/imagem.logo.joia.jpeg.png",
+  };
+
+  const getSectionProductsContainer = (categoria) => {
+    const key = String(categoria || "").toLowerCase();
+    const sectionId = CATEGORY_SECTION_ID[key] || CATEGORY_SECTION_ID.bovino;
+    return document.querySelector(`#${sectionId} .produtos`);
+  };
+
+  const criarCardProduto = (apiProduct) => {
+    const categoria = String(apiProduct?.categoria || "geral").toLowerCase();
+    const imgSrc = CATEGORY_PLACEHOLDER_IMAGE[categoria] || CATEGORY_PLACEHOLDER_IMAGE.geral;
+
+    const card = document.createElement("div");
+    card.className = "produto";
+    card.innerHTML = `
+      <img src="${imgSrc}" alt="${apiProduct.nome}">
+      <h3>${apiProduct.nome}</h3>
+      <p class="preco">R$ ${formatCurrency(Number(apiProduct.preco || 0))} / kg</p>
+      <label>Seleção:</label>
+      <select>
+        <option value="churrasco">Corte para Churrasco</option>
+        <option value="bife">Corte para Bife</option>
+      </select>
+      <label>Peso (kg):</label>
+      <input type="number" step="0.1" min="0.1" max="10">
+      <button class="btn-comprar">Adicionar ao Carrinho</button>
+    `;
+
+    card.setAttribute("data-product-id", String(apiProduct.id));
+    card.setAttribute("data-product-category", categoria || "geral");
+    return card;
+  };
+
   // Bloco integracao: aplica preco e disponibilidade vindo da API nos cards do site.
   const applyApiProductsToCards = (apiProducts) => {
     // Monta mapa de nome normalizado para produto da API.
@@ -80,6 +128,34 @@
         return;
       }
       productsByName.set(key, product);
+    });
+
+    // Cria cards para produtos novos da API que ainda nao existem no HTML.
+    apiProducts.forEach((product) => {
+      const key = normalizeText(product.nome);
+      if (!key) {
+        return;
+      }
+
+      const jaExiste = Array.from(document.querySelectorAll(".produto h3")).some(
+        (el) => normalizeText(el.innerText) === key
+      );
+
+      if (jaExiste) {
+        return;
+      }
+
+      const container = getSectionProductsContainer(product.categoria);
+      if (!container) {
+        return;
+      }
+
+      const novoCard = criarCardProduto(product);
+      container.appendChild(novoCard);
+      const novoBotao = novoCard.querySelector(".btn-comprar");
+      if (novoBotao) {
+        bindBuyButton(novoBotao);
+      }
     });
 
     document.querySelectorAll(".produto").forEach((card) => {
@@ -850,7 +926,13 @@
   }
 
   // Adicionar produto
-  document.querySelectorAll(".btn-comprar").forEach((btn) => {
+  const bindBuyButton = (btn) => {
+    if (!btn || btn.dataset.boundBuy === "1") {
+      return;
+    }
+
+    btn.dataset.boundBuy = "1";
+
     btn.addEventListener("click", async () => {
       const produto = btn.closest(".produto");
       if (!produto || !listaCarrinho) {
@@ -931,7 +1013,9 @@
         inputPeso.value = "";
       }
     });
-  });
+  };
+
+  document.querySelectorAll(".btn-comprar").forEach(bindBuyButton);
 
   const btnVoltar = document.getElementById("btn-voltar");
   if (btnVoltar) {

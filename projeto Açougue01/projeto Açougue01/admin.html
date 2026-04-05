@@ -85,6 +85,54 @@
       align-items: center;
     }
 
+    .novo-produto-box {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.8fr 0.8fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 22px;
+      padding: 16px;
+      background: #f8f9fa;
+      border: 1px solid #e6e6e6;
+      border-radius: 8px;
+    }
+
+    .novo-produto-box .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .novo-produto-box label {
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 600;
+    }
+
+    .novo-produto-box input,
+    .novo-produto-box select {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+
+    .btn-cadastrar {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #b30000;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      height: 42px;
+    }
+
+    .btn-cadastrar:hover {
+      background: #8b0000;
+    }
+
     .filtros input,
     .filtros select {
       padding: 10px 15px;
@@ -258,6 +306,10 @@
     @media (max-width: 768px) {
       .header h1 {
         font-size: 1.5rem;
+      }
+
+      .novo-produto-box {
+        grid-template-columns: 1fr;
       }
 
       .resumo {
@@ -436,8 +488,36 @@
           <option value="bovino">Bovino</option>
           <option value="suino">Suíno</option>
           <option value="frango">Frango</option>
+          <option value="rotisseria">Rotisseria</option>
+          <option value="conveniencia">Conveniencia</option>
         </select>
         <button class="btn-voltar" onclick="location.href='/'">← Voltar para Loja</button>
+      </div>
+
+      <div class="novo-produto-box">
+        <div class="campo">
+          <label for="novo-nome">Nome do novo produto</label>
+          <input type="text" id="novo-nome" placeholder="Ex.: Linguiça Toscana">
+        </div>
+        <div class="campo">
+          <label for="novo-categoria">Categoria</label>
+          <select id="novo-categoria">
+            <option value="bovino">Bovino</option>
+            <option value="suino">Suíno</option>
+            <option value="frango">Frango</option>
+            <option value="rotisseria">Rotisseria</option>
+            <option value="conveniencia">Conveniencia</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="novo-preco">Preço (R$)</label>
+          <input type="number" id="novo-preco" step="0.01" min="0.01" placeholder="0,00">
+        </div>
+        <div class="campo">
+          <label for="novo-estoque">Estoque inicial (kg)</label>
+          <input type="number" id="novo-estoque" step="0.1" min="0" placeholder="0,0">
+        </div>
+        <button class="btn-cadastrar" id="btn-cadastrar-produto">+ Cadastrar</button>
       </div>
 
       <div class="tabela-wrapper" id="tabela-container">
@@ -681,6 +761,70 @@
       }
     };
 
+    const cadastrarProduto = async () => {
+      const nome = String(document.getElementById("novo-nome")?.value || "").trim();
+      const categoria = String(document.getElementById("novo-categoria")?.value || "").trim().toLowerCase();
+      const preco = Number(document.getElementById("novo-preco")?.value || 0);
+      const estoque = Number(document.getElementById("novo-estoque")?.value || 0);
+
+      if (!nome) {
+        mostrarMensagem("Informe o nome do produto.", "erro");
+        return;
+      }
+
+      if (!categoria) {
+        mostrarMensagem("Selecione a categoria.", "erro");
+        return;
+      }
+
+      if (!Number.isFinite(preco) || preco <= 0) {
+        mostrarMensagem("Preço inválido. Informe um valor maior que zero.", "erro");
+        return;
+      }
+
+      if (!Number.isFinite(estoque) || estoque < 0) {
+        mostrarMensagem("Estoque inválido. Informe um valor igual ou maior que zero.", "erro");
+        return;
+      }
+
+      try {
+        const resCreate = await fetchAdmin(`${API_BASE_URL}/produtos`, {
+          method: "POST",
+          body: JSON.stringify({ nome, preco, categoria })
+        });
+
+        const dataCreate = await resCreate.json().catch(() => ({}));
+
+        if (!resCreate.ok || !dataCreate?.id) {
+          throw new Error(dataCreate?.error || "Não foi possível criar o produto.");
+        }
+
+        const productId = Number(dataCreate.id);
+
+        const resStock = await fetchAdmin(`${API_BASE_URL}/admin/estoque/${productId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ quantidade: estoque })
+        });
+
+        const dataStock = await resStock.json().catch(() => ({}));
+
+        if (!resStock.ok) {
+          throw new Error(dataStock?.error || "Produto criado, mas falhou ao salvar estoque.");
+        }
+
+        mostrarMensagem(`✅ Produto cadastrado com sucesso! ID #${productId}`, "sucesso");
+
+        document.getElementById("novo-nome").value = "";
+        document.getElementById("novo-preco").value = "";
+        document.getElementById("novo-estoque").value = "";
+        document.getElementById("novo-categoria").value = "bovino";
+
+        await carregarDados();
+      } catch (error) {
+        mostrarMensagem("❌ Erro ao cadastrar: " + (error?.message || "Falha"), "erro");
+      }
+    };
+
     // Filtros
     document.getElementById("filtro-nome").addEventListener("keyup", (e) => {
       const termo = e.target.value.toLowerCase();
@@ -707,6 +851,8 @@
 
       renderizarTabela(filtrado);
     });
+
+    document.getElementById("btn-cadastrar-produto").addEventListener("click", cadastrarProduto);
 
     // Carrega dados ao iniciar (somente se autenticado)
     if (getToken()) {
