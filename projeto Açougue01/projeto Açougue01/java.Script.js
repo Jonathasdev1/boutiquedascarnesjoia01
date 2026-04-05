@@ -212,16 +212,17 @@
 
     // Cria cards para produtos novos da API que ainda nao existem no HTML.
     apiProducts.forEach((product) => {
-      const key = normalizeText(product.nome);
-      if (!key) {
+      const productId = Number(product?.id);
+      if (!Number.isInteger(productId) || productId <= 0) {
         return;
       }
 
-      const jaExiste = Array.from(document.querySelectorAll(".produto h3")).some(
-        (el) => normalizeText(el.innerText) === key
-      );
+      const jaExistePorId = Array.from(document.querySelectorAll(".produto")).some((el) => {
+        const existingId = Number(el.getAttribute("data-product-id"));
+        return Number.isInteger(existingId) && existingId === productId;
+      });
 
-      if (jaExiste) {
+      if (jaExistePorId) {
         return;
       }
 
