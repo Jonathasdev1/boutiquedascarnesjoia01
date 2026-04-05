@@ -5,7 +5,7 @@ const fs = require('fs');
 // Bloco 1: importa o framework e a conexão com banco SQLite.
 const express = require("express");
 const path = require("path");
-const { db } = require("./db");
+const { db, dbPath } = require("./db");
 
 // Bloco 2: inicializa a aplicacao e define a porta padrao.
 const app = express();
@@ -29,7 +29,7 @@ const LOG_FILE = path.join(LOG_DIR, "api.log");
 if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
 
 const BACKUP_DIR = path.join(__dirname, "backups");
-const DB_FILE = path.join(__dirname, "acougue.db");
+const DB_FILE = dbPath;
 const BACKUP_INTERVAL_HOURS = Number(process.env.BACKUP_INTERVAL_HOURS || 24);
 if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
 

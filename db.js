@@ -1,8 +1,15 @@
 const path = require("path");
+const fs = require("fs");
 const Database = require("better-sqlite3");
 
 // Bloco 1: cria/abre o arquivo local do banco SQLite.
-const dbPath = path.join(__dirname, "acougue.db");
+const dbPath = process.env.DB_PATH
+  ? path.resolve(process.env.DB_PATH)
+  : path.join(__dirname, "acougue.db");
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 const db = new Database(dbPath);
 
 // Bloco 2: configurações importantes para integridade e performance.
@@ -123,4 +130,4 @@ if (totalProdutos === 0) {
   seed(produtosIniciais);
 }
 
-module.exports = { db };
+module.exports = { db, dbPath };
