@@ -271,12 +271,25 @@
         return;
       }
 
+      const normalizedProductName = normalizeText(product.nome);
+
       const jaExistePorId = Array.from(document.querySelectorAll(".produto")).some((el) => {
         const existingId = Number(el.getAttribute("data-product-id"));
         return Number.isInteger(existingId) && existingId === productId;
       });
 
       if (jaExistePorId) {
+        return;
+      }
+
+      const cardExistentePorNome = Array.from(document.querySelectorAll(".produto")).find((el) => {
+        const existingName = el.querySelector("h3")?.innerText || "";
+        return normalizeText(existingName) === normalizedProductName;
+      });
+
+      if (cardExistentePorNome) {
+        cardExistentePorNome.setAttribute("data-product-id", String(productId));
+        cardExistentePorNome.setAttribute("data-product-category", product.categoria || "geral");
         return;
       }
 
@@ -292,6 +305,9 @@
         bindBuyButton(novoBotao);
       }
     });
+
+    // Limpeza final para remover qualquer duplicata herdada de sincronizacoes antigas.
+    removeDuplicateCardsFromDom();
 
     document.querySelectorAll(".produto").forEach((card) => {
       const nameEl = card.querySelector("h3");
