@@ -94,6 +94,52 @@
     return document.querySelector(`#${sectionId} .produtos`);
   };
 
+  const getCategoryFallbackImage = (categoria) => {
+    const key = String(categoria || "").toLowerCase();
+    return CATEGORY_PLACEHOLDER_IMAGE[key] || CATEGORY_PLACEHOLDER_IMAGE.geral;
+  };
+
+  const getCardCategory = (card) => {
+    const sectionId = card?.closest("section")?.id;
+    const match = Object.entries(CATEGORY_SECTION_ID).find(([, value]) => value === sectionId);
+    return match?.[0] || String(card?.getAttribute("data-product-category") || "geral").toLowerCase();
+  };
+
+  const applyImageWithFallback = (imgEl, src, alt, categoria) => {
+    if (!imgEl) {
+      return;
+    }
+
+    const fallbackSrc = getCategoryFallbackImage(categoria);
+
+    imgEl.alt = alt || imgEl.alt || "Produto";
+    imgEl.dataset.fallbackApplied = "0";
+    imgEl.onerror = () => {
+      if (imgEl.dataset.fallbackApplied === "1") {
+        return;
+      }
+
+      imgEl.dataset.fallbackApplied = "1";
+      imgEl.src = fallbackSrc;
+    };
+
+    imgEl.src = src || fallbackSrc;
+  };
+
+  const initializeProductImageFallbacks = () => {
+    document.querySelectorAll(".produto").forEach((card) => {
+      const imgEl = card.querySelector("img");
+      if (!imgEl) {
+        return;
+      }
+
+      const categoria = getCardCategory(card);
+      const currentSrc = imgEl.getAttribute("src") || "";
+      const currentAlt = imgEl.getAttribute("alt") || card.querySelector("h3")?.innerText || "Produto";
+      applyImageWithFallback(imgEl, currentSrc, currentAlt, categoria);
+    });
+  };
+
   const removeDuplicateCardsFromDom = () => {
     const seen = new Set();
     document.querySelectorAll(".produto").forEach((card) => {
@@ -151,10 +197,11 @@
     if (nameEl) nameEl.innerText = apiProduct.nome;
     if (priceEl) priceEl.innerText = `R$ ${formatCurrency(Number(apiProduct.preco || 0))} / kg`;
     if (imgEl) {
-      if (typeof apiProduct.imagem_url === "string" && apiProduct.imagem_url.trim()) {
-        imgEl.src = apiProduct.imagem_url.trim();
-      }
-      imgEl.alt = apiProduct.nome;
+      const imageSrc =
+        typeof apiProduct.imagem_url === "string" && apiProduct.imagem_url.trim()
+          ? apiProduct.imagem_url.trim()
+          : imgEl.getAttribute("src") || "";
+      applyImageWithFallback(imgEl, imageSrc, apiProduct.nome, categoria);
     }
 
     // Evita conflito de IDs ao clonar card existente.
@@ -287,8 +334,12 @@
 
       const imgEl = card.querySelector("img");
       if (imgEl && typeof apiProduct.imagem_url === "string" && apiProduct.imagem_url.trim()) {
-        imgEl.src = apiProduct.imagem_url.trim();
-        imgEl.alt = apiProduct.nome;
+        applyImageWithFallback(
+          imgEl,
+          apiProduct.imagem_url.trim(),
+          apiProduct.nome,
+          apiProduct.categoria || getCardCategory(card)
+        );
       }
 
       // Bloco disponibilidade: usa a disponibilidade calculada pela API.
@@ -1234,6 +1285,7 @@
 
   inicializarCarrinhoUI();
   registrarEventosCarrinho();
+  initializeProductImageFallbacks();
   renderCarrinho();
   updateFloatingCartButtonState();
 
