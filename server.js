@@ -346,10 +346,10 @@ app.post("/produtos/sync-catalogo", verificarAdmin, (req, res) => {
 	const byKey = new Map(existentes.map((item) => [normalizeName(item.nome), item]));
 
 	const insertProduto = db.prepare(
-		"INSERT INTO produto (nome, preco, categoria, ativo) VALUES (?, ?, ?, 0)"
+		"INSERT INTO produto (nome, preco, categoria, imagem_url, ativo) VALUES (?, ?, ?, ?, 1)"
 	);
 	const updateProduto = db.prepare(
-		"UPDATE produto SET nome = ?, preco = ?, categoria = ? WHERE id = ?"
+		"UPDATE produto SET nome = ?, preco = ?, categoria = ?, imagem_url = COALESCE(?, imagem_url) WHERE id = ?"
 	);
 	const insertEstoque = db.prepare(
 		"INSERT OR IGNORE INTO estoque (produto_id, quantidade, unidade) VALUES (?, 0, 'kg')"
@@ -361,6 +361,8 @@ app.post("/produtos/sync-catalogo", verificarAdmin, (req, res) => {
 			const preco = Number(item?.preco);
 			const categoria =
 				typeof item?.categoria === "string" && item.categoria.trim() ? item.categoria.trim() : "geral";
+			const imagemUrl =
+				typeof item?.imagem_url === "string" && item.imagem_url.trim() ? item.imagem_url.trim() : null;
 
 			if (!nome || !Number.isFinite(preco) || preco <= 0) {
 				ignorados += 1;
@@ -371,10 +373,11 @@ app.post("/produtos/sync-catalogo", verificarAdmin, (req, res) => {
 			const existente = byKey.get(key);
 
 			if (existente) {
-				updateProduto.run(nome, Number(preco.toFixed(2)), categoria, existente.id);
+				updateProduto.run(nome, Number(preco.toFixed(2)), categoria, imagemUrl, existente.id);
+				insertEstoque.run(existente.id);
 				atualizados += 1;
 			} else {
-				const info = insertProduto.run(nome, Number(preco.toFixed(2)), categoria);
+				const info = insertProduto.run(nome, Number(preco.toFixed(2)), categoria, imagemUrl);
 				insertEstoque.run(info.lastInsertRowid);
 				byKey.set(key, { id: info.lastInsertRowid, nome });
 				criados += 1;

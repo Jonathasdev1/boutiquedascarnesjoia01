@@ -438,6 +438,7 @@
     document.querySelectorAll(".produto").forEach((card) => {
       const nameEl = card.querySelector("h3");
       const priceEl = card.querySelector(".preco");
+      const imgEl = card.querySelector("img");
       const section = card.closest("section");
 
       if (!nameEl || !priceEl) {
@@ -447,12 +448,13 @@
       const nome = nameEl.innerText.trim();
       const preco = parsePrice(priceEl.innerText);
       const categoria = section?.id ? String(section.id).toLowerCase() : "geral";
+      const imagem_url = imgEl?.getAttribute("src")?.trim() || null;
 
       if (!nome || !preco || preco <= 0) {
         return;
       }
 
-      catalogo.push({ nome, preco, categoria });
+      catalogo.push({ nome, preco, categoria, imagem_url });
     });
 
     return catalogo;

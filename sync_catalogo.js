@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const cheerio = require('cheerio');
 
 const args = process.argv.slice(2);
 const apiBaseUrl = (args[0] || '').trim().replace(/\/+$/, '');
@@ -13,6 +14,7 @@ if (!apiBaseUrl || !adminPassword) {
 
 const indexPath = path.join(__dirname, 'projeto Açougue01', 'projeto Açougue01', 'index.html');
 const html = fs.readFileSync(indexPath, 'utf-8');
+const $ = cheerio.load(html);
 
 const cleanText = (value) =>
   String(value || '')
@@ -43,30 +45,24 @@ const parsePreco = (raw) => {
 
 const produtos = [];
 
-const sectionRegex = /<section\s+id="([^"]+)"[\s\S]*?<div\s+class="produtos">([\s\S]*?)<\/div>\s*<\/section>/gi;
-let secMatch;
-
-while ((secMatch = sectionRegex.exec(html)) !== null) {
-  const sectionId = secMatch[1];
+$('section.secao-carnes').each((_, sectionEl) => {
+  const sectionId = $(sectionEl).attr('id') || '';
   const categoria = toCategoria(sectionId);
-  const sectionBody = secMatch[2];
 
-  const produtoRegex = /<div\s+class="produto">([\s\S]*?)<\/div>/gi;
-  let prodMatch;
+  $(sectionEl)
+    .find('.produtos > .produto')
+    .each((__, produtoEl) => {
+      const nome = cleanText($(produtoEl).find('h3').first().text());
+      const preco = parsePreco(cleanText($(produtoEl).find('.preco').first().text()));
+      const imagem_url = String($(produtoEl).find('img').first().attr('src') || '').trim() || null;
 
-  while ((prodMatch = produtoRegex.exec(sectionBody)) !== null) {
-    const bloco = prodMatch[1];
-    const nomeMatch = bloco.match(/<h3>([\s\S]*?)<\/h3>/i);
-    const precoMatch = bloco.match(/<p\s+class="preco">([\s\S]*?)<\/p>/i);
+      if (!nome || !preco) {
+        return;
+      }
 
-    const nome = cleanText(nomeMatch ? nomeMatch[1] : '');
-    const preco = parsePreco(precoMatch ? cleanText(precoMatch[1]) : '');
-
-    if (!nome || !preco) continue;
-
-    produtos.push({ nome, preco, categoria });
-  }
-}
+      produtos.push({ nome, preco, categoria, imagem_url });
+    });
+});
 
 // Remove duplicados por nome normalizado, mantendo o ultimo encontrado.
 const normalizeName = (s) =>
