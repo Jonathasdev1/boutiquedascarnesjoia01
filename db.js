@@ -137,35 +137,35 @@ const novosCortesBovinos = [
     preco: 52.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?auto=format&fit=crop&w=900&q=80",
+      "https://source.unsplash.com/900x600/?raw,beef,cap",
   },
   {
     nome: "Peito",
     preco: 34.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=900&q=80",
+      "https://source.unsplash.com/900x600/?raw,beef,chuck",
   },
   {
     nome: "Acém",
     preco: 36.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1551028150-64b9f398f678?auto=format&fit=crop&w=900&q=80",
+      "https://source.unsplash.com/900x600/?raw,beef,raw-cut",
   },
   {
     nome: "Paleta",
     preco: 39.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?auto=format&fit=crop&w=900&q=80",
+      "https://source.unsplash.com/900x600/?raw,beef,butcher",
   },
   {
     nome: "Músculo",
     preco: 31.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=900&q=80",
+      "https://source.unsplash.com/900x600/?raw,beef,shank",
   },
 ];
 
@@ -181,6 +181,10 @@ const inserirEstoqueSeNaoExistir = db.prepare(
   "INSERT OR IGNORE INTO estoque (produto_id, quantidade, unidade) VALUES (?, 0, 'kg')"
 );
 
+const atualizarProdutoExistente = db.prepare(
+  "UPDATE produto SET preco = ?, categoria = ?, imagem_url = ?, ativo = 1 WHERE lower(trim(nome)) = lower(trim(?))"
+);
+
 const garantirNovosCortes = db.transaction((items) => {
   for (const item of items) {
     inserirProdutoSeNaoExistir.run(
@@ -193,6 +197,12 @@ const garantirNovosCortes = db.transaction((items) => {
 
     const produto = buscarProdutoIdPorNome.get(item.nome);
     if (produto?.id) {
+      atualizarProdutoExistente.run(
+        item.preco,
+        item.categoria,
+        item.imagem_url,
+        item.nome
+      );
       inserirEstoqueSeNaoExistir.run(produto.id);
     }
   }
