@@ -137,35 +137,35 @@ const novosCortesBovinos = [
     preco: 52.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?auto=format&fit=crop&w=900&q=80",
+      "imagens_projeto_acougue/Carne_Primeira/Contra-file.jpeg",
   },
   {
     nome: "Peito",
     preco: 34.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=900&q=80",
+      "imagens_projeto_acougue/Carne_Primeira/Costela-PA.jpeg",
   },
   {
     nome: "Acém",
     preco: 36.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1551028150-64b9f398f678?auto=format&fit=crop&w=900&q=80",
+      "imagens_projeto_acougue/Carne_Primeira/Coxao-Duro.jpeg",
   },
   {
     nome: "Paleta",
     preco: 39.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?auto=format&fit=crop&w=900&q=80",
+      "imagens_projeto_acougue/Carne_Primeira/Coxao-mole.jpeg",
   },
   {
     nome: "Músculo",
     preco: 31.9,
     categoria: "bovino",
     imagem_url:
-      "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=900&q=80",
+      "imagens_projeto_acougue/Carne_Primeira/Patinho.jpeg",
   },
 ];
 
