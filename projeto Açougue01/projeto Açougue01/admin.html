@@ -542,7 +542,22 @@
   
   <script>
     // ── Autenticação ─────────────────────────────────────────────────────
+    const CATALOG_SYNC_EVENT = 'zedascarnes-catalog-updated';
+    const catalogSyncChannel = typeof window.BroadcastChannel === 'function'
+      ? new BroadcastChannel(CATALOG_SYNC_EVENT)
+      : null;
+
     const getToken = () => localStorage.getItem('adminToken') || ''; 
+
+    const notifyCatalogChanged = () => {
+      const stamp = String(Date.now());
+      try {
+        localStorage.setItem(CATALOG_SYNC_EVENT, stamp);
+      } catch (_) {}
+      if (catalogSyncChannel) {
+        catalogSyncChannel.postMessage({ updatedAt: stamp });
+      }
+    };
 
     const mostrarLoginOverlay = () => {
       document.getElementById('login-overlay').classList.remove('oculto');
@@ -794,6 +809,7 @@
         }
 
         mostrarMensagem("✅ Produto atualizado com sucesso!", "sucesso");
+        notifyCatalogChanged();
         
         // Recarrega dados
         setTimeout(() => carregarDados(), 500);
@@ -867,6 +883,7 @@
         document.getElementById("novo-imagem-url").value = "";
         document.getElementById("novo-categoria").value = "bovino";
 
+        notifyCatalogChanged();
         await carregarDados();
       } catch (error) {
         mostrarMensagem("❌ Erro ao cadastrar: " + (error?.message || "Falha"), "erro");
