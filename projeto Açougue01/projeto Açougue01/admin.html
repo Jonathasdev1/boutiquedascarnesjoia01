@@ -538,7 +538,7 @@
   </div>
 
   <!-- Carregamento de configuração centralizada -->
-  <script src="config.js?v=20260408"></script>
+  <script src="config.js?v=20260408-2"></script>
   
   <script>
     // ── Autenticação ─────────────────────────────────────────────────────
@@ -669,7 +669,7 @@
       const getMensagemErro = (error, fallback) => {
         const message = String(error?.message || "").trim();
         if (message === "Failed to fetch") {
-          return "Não foi possível conectar à API em http://localhost:3000. Inicie o backend com 'npm start' na pasta do projeto e abra o painel por http://localhost:3000/admin.";
+          return `Não foi possível conectar à API em ${API_BASE_URL}. Verifique se o backend publicado está online e se o CORS está liberado para o frontend.`;
         }
         return message || fallback;
       };
@@ -706,7 +706,7 @@
         document.getElementById("tabela-container").innerHTML = `
           <div style="padding: 40px; text-align: center; color: #dc3545;">
             <p>❌ Erro ao conectar com a API</p>
-            <p>Certifique-se de que o servidor está rodando em http://localhost:3000</p>
+            <p>Endpoint configurado: ${API_BASE_URL}</p>
           </div>
         `;
       }
