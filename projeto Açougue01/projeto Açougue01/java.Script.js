@@ -1316,7 +1316,7 @@
     const btnPrev = galeria.querySelector(".slider-btn.prev");
     const btnNext = galeria.querySelector(".slider-btn.next");
 
-    if (imagens.length > 0) {
+    if (imagens.length > 1) {
       let indiceAtual = 0;
       let intervalo = null;
 
@@ -1330,7 +1330,7 @@
         clearInterval(intervalo);
         intervalo = setInterval(() => {
           mostrarSlide(indiceAtual + 1);
-        }, 3000);
+        }, 5000);
       };
 
       if (btnPrev) {
