@@ -1,4 +1,4 @@
-# Boutique das Carnes e Conveniência Joia — API
+# Boutique das Carnes e Conveniência Zé das Carnes — API
 
 Sistema de e-commerce para açougue com carrinho, checkout via WhatsApp, gestão de estoque e painel administrativo protegido por senha.
 

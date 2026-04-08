@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Admin - Boutique das Carnes Ze das carnes</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Painel Admin - Boutique das Carnes Zé das Carnes</title>
   <style>
     * {
       margin: 0;
@@ -444,7 +447,7 @@
   <div id="login-overlay">
     <div class="login-box">
       <h2>🔐 Acesso Restrito</h2>
-      <p>Painel Administrativo<br>Boutique das Carnes e Conveniência Ze das carnes</p>
+      <p>Painel Administrativo<br>Boutique das Carnes e Conveniência Zé das Carnes</p>
       <input type="password" id="login-senha" placeholder="Digite a senha de administrador"
         onkeydown="if(event.key==='Enter')fazerLogin()">
       <div class="login-erro" id="login-erro"></div>
@@ -455,7 +458,7 @@
   <div class="container">
     <div class="header">
       <h1>📦 Painel Administrativo</h1>
-      <p>Boutique das Carnes e Conveniência Ze das carnes - Gerenciamento de Estoque</p>
+      <p>Boutique das Carnes e Conveniência Zé das Carnes - Gerenciamento de Estoque</p>
       <div class="header-actions">
         <button class="btn-exportar" onclick="exportarDados('csv')">⬇ Exportar CSV</button>
         <button class="btn-exportar" onclick="exportarDados('xlsx')">⬇ Exportar Excel</button>
@@ -535,7 +538,7 @@
   </div>
 
   <!-- Carregamento de configuração centralizada -->
-  <script src="config.js"></script>
+  <script src="config.js?v=20260408"></script>
   
   <script>
     // ── Autenticação ─────────────────────────────────────────────────────
@@ -655,10 +658,10 @@
     // ───────────────────────────────────────────────────────────────────
 
     const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || (() => {
-      const productionUrl = "https://boutiquedascarnesjoia01.onrender.com";
-      const host = window.location.hostname;
-      const isLocal = host === "localhost" || host === "127.0.0.1";
-      return isLocal ? "http://localhost:3000" : productionUrl;
+      if (window.location.protocol === "file:") {
+        return "http://localhost:3000";
+      }
+      return window.location.origin.replace(/\/+$/, "");
     })();
 
     let dadosAtual = [];

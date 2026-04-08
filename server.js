@@ -170,7 +170,26 @@ const WEB_ROOT = path.join(
 	"projeto Açougue01",
 	"projeto Açougue01"
 );
-app.use(express.static(WEB_ROOT));
+
+// Bloco 4.1.1: desativa cache de arquivos do frontend para refletir alteracoes imediatamente.
+app.use((req, res, next) => {
+	if (req.method === "GET" && /\.(html|css|js)$/i.test(req.path)) {
+		res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+		res.setHeader("Pragma", "no-cache");
+		res.setHeader("Expires", "0");
+	}
+	next();
+});
+
+app.use(express.static(WEB_ROOT, {
+	setHeaders: (res, filePath) => {
+		if (/\.(html|css|js)$/i.test(filePath)) {
+			res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+			res.setHeader("Pragma", "no-cache");
+			res.setHeader("Expires", "0");
+		}
+	},
+}));
 
 // Bloco 5: normaliza nome para evitar duplicidade por acento/hifen/espaco.
 const normalizeName = (value) => {
@@ -259,11 +278,21 @@ syncAllAvailabilityByStock();
 
 // Bloco 6: rota web unica oficial (index do frontend).
 app.get("/", (req, res) => {
+	delete req.headers["if-none-match"];
+	delete req.headers["if-modified-since"];
+	res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+	res.setHeader("Pragma", "no-cache");
+	res.setHeader("Expires", "0");
 	res.sendFile(path.join(WEB_ROOT, "index.html"));
 });
 
 // Bloco 6.0: rota admin (painel de controle de estoque).
 app.get("/admin", (req, res) => {
+	delete req.headers["if-none-match"];
+	delete req.headers["if-modified-since"];
+	res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+	res.setHeader("Pragma", "no-cache");
+	res.setHeader("Expires", "0");
 	res.sendFile(path.join(WEB_ROOT, "admin.html"));
 });
 
@@ -1270,6 +1299,133 @@ app.get('/api/exportar', verificarAdmin, async (req, res) => {
 		res.download(xlsxPath, 'exportacao_acougue.xlsx');
 	} catch (err) {
 		res.status(500).json({ error: 'Falha ao exportar: ' + err.message });
+	}
+});
+
+// Bloco 15.5: exporta apenas os pedidos do dia corrente em Excel (ADMIN).
+// Exemplo: GET /api/exportar-pedidos-dia
+// Exemplo com data específica: GET /api/exportar-pedidos-dia?data=2026-04-08
+app.get('/api/exportar-pedidos-dia', verificarAdmin, async (req, res) => {
+	try {
+		const ExcelJS = require('exceljs');
+
+		// Aceita uma data via query string ou usa o dia atual no fuso local do servidor.
+		const dataParam = String(req.query.data || '').trim();
+		const dataFiltro = dataParam.match(/^\d{4}-\d{2}-\d{2}$/)
+			? dataParam
+			: new Date().toISOString().slice(0, 10); // ex.: "2026-04-08"
+
+		// Busca pedidos cujo criado_em começa com a data filtrada.
+		const pedidos = db.prepare(
+			`SELECT
+				p.id,
+				p.numero_pedido,
+				c.nome   AS cliente_nome,
+				c.telefone AS cliente_telefone,
+				p.status,
+				p.total,
+				p.tipo_entrega,
+				p.endereco_entrega,
+				p.observacao,
+				p.criado_em
+			FROM pedido p
+			JOIN cliente c ON c.id = p.cliente_id
+			WHERE p.criado_em LIKE ?
+			ORDER BY p.id`
+		).all(`${dataFiltro}%`);
+
+		// Busca os itens de todos esses pedidos de uma vez só.
+		const pedidoIds = pedidos.map(p => p.id);
+		let itensPorPedido = {};
+		if (pedidoIds.length > 0) {
+			const placeholders = pedidoIds.map(() => '?').join(',');
+			const itens = db.prepare(
+				`SELECT pi.pedido_id, pr.nome AS produto, pi.quantidade, pi.preco_unitario, pi.subtotal
+				FROM pedido_item pi
+				JOIN produto pr ON pr.id = pi.produto_id
+				WHERE pi.pedido_id IN (${placeholders})
+				ORDER BY pi.pedido_id, pi.id`
+			).all(...pedidoIds);
+			itens.forEach(item => {
+				if (!itensPorPedido[item.pedido_id]) itensPorPedido[item.pedido_id] = [];
+				itensPorPedido[item.pedido_id].push(item);
+			});
+		}
+
+		const workbook = new ExcelJS.Workbook();
+		workbook.creator = 'API Boutique das Carnes';
+		workbook.created = new Date();
+
+		// ── Aba 1: Resumo dos pedidos ─────────────────────────────────────
+		const wsPedidos = workbook.addWorksheet('Pedidos do Dia');
+		wsPedidos.addRow(['Nº', 'Número Pedido', 'Cliente', 'Telefone', 'Status', 'Total (R$)', 'Entrega', 'Endereço', 'Observação', 'Data/Hora']);
+		wsPedidos.getRow(1).font = { bold: true };
+		wsPedidos.views = [{ state: 'frozen', ySplit: 1 }];
+
+		let totalGeral = 0;
+		pedidos.forEach(p => {
+			wsPedidos.addRow([
+				p.id,
+				p.numero_pedido ? String(p.numero_pedido).padStart(3, '0') : '-',
+				p.cliente_nome,
+				p.cliente_telefone,
+				p.status,
+				Number(p.total),
+				p.tipo_entrega,
+				p.endereco_entrega || '-',
+				p.observacao || '-',
+				p.criado_em
+			]);
+			totalGeral += Number(p.total || 0);
+		});
+
+		// Linha de totais
+		if (pedidos.length > 0) {
+			const linhaTotal = wsPedidos.addRow(['', '', '', '', 'TOTAL DO DIA', totalGeral, '', '', '', '']);
+			linhaTotal.font = { bold: true };
+			linhaTotal.getCell(6).numFmt = 'R$ #,##0.00';
+		}
+
+		// Formata coluna de valor como moeda
+		wsPedidos.getColumn(6).numFmt = 'R$ #,##0.00';
+		wsPedidos.columns.forEach(col => { col.width = 20; });
+
+		// ── Aba 2: Itens detalhados ───────────────────────────────────────
+		const wsItens = workbook.addWorksheet('Itens dos Pedidos');
+		wsItens.addRow(['Nº Pedido', 'Cliente', 'Produto', 'Quantidade (kg)', 'Preço Unit. (R$)', 'Subtotal (R$)']);
+		wsItens.getRow(1).font = { bold: true };
+		wsItens.views = [{ state: 'frozen', ySplit: 1 }];
+
+		pedidos.forEach(p => {
+			const itens = itensPorPedido[p.id] || [];
+			itens.forEach(item => {
+				wsItens.addRow([
+					p.numero_pedido ? String(p.numero_pedido).padStart(3, '0') : p.id,
+					p.cliente_nome,
+					item.produto,
+					Number(item.quantidade),
+					Number(item.preco_unitario),
+					Number(item.subtotal)
+				]);
+			});
+		});
+
+		wsItens.getColumn(5).numFmt = 'R$ #,##0.00';
+		wsItens.getColumn(6).numFmt = 'R$ #,##0.00';
+		wsItens.columns.forEach(col => { col.width = 22; });
+
+		// Gera o arquivo e envia para download
+		const pastaExport = path.join(__dirname, 'exportacao');
+		if (!fs.existsSync(pastaExport)) fs.mkdirSync(pastaExport);
+
+		const nomeArquivo = `pedidos_${dataFiltro}.xlsx`;
+		const xlsxPath = path.join(pastaExport, nomeArquivo);
+		await workbook.xlsx.writeFile(xlsxPath);
+
+		logInfo(`Exportacao pedidos do dia ${dataFiltro}: ${pedidos.length} pedido(s), total R$ ${totalGeral.toFixed(2)}`);
+		res.download(xlsxPath, nomeArquivo);
+	} catch (err) {
+		res.status(500).json({ error: 'Falha ao exportar pedidos do dia: ' + err.message });
 	}
 });
 

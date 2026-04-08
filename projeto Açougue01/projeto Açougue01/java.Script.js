@@ -5,10 +5,10 @@
   // Utiliza configuração centralizada em config.js
   const WHATSAPP_NUMBER = window.APP_CONFIG?.WHATSAPP_NUMBER || "5512991307272";
   const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || (() => {
-    const productionUrl = "https://boutiquedascarnesjoia01.onrender.com";
-    const host = window.location.hostname;
-    const isLocal = host === "localhost" || host === "127.0.0.1";
-    return isLocal ? "http://localhost:3000" : productionUrl;
+    if (window.location.protocol === "file:") {
+      return "http://localhost:3000";
+    }
+    return window.location.origin.replace(/\/+$/, "");
   })();
   const API_ENABLED = window.APP_CONFIG?.API_ENABLED ?? Boolean(API_BASE_URL);
 
@@ -880,7 +880,7 @@
         timeStyle: "short",
       });
 
-      let mensagem = "*🥩 Pedido - Boutique das Carnes Ze das carnes*\n\n";
+      let mensagem = "*🥩 Pedido - Boutique das Carnes Zé das Carnes*\n\n";
       mensagem += `*Data/Hora:* ${dataHoraPedido}\n`;
       mensagem += `*Cliente:* ${clienteNome}\n`;
       mensagem += `*Telefone:* ${clienteTelefone}\n`;
@@ -1036,7 +1036,7 @@
       timeStyle: "short",
     });
 
-    let mensagem = "*🥩 Pedido - Boutique das Carnes Ze das carnes*\n\n";
+    let mensagem = "*🥩 Pedido - Boutique das Carnes Zé das Carnes*\n\n";
     if (numeroPedido !== null) {
       mensagem += `*Nº Pedido:* ${String(numeroPedido).padStart(3, "0")}\n`;
     }

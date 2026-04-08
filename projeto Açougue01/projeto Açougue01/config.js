@@ -13,21 +13,22 @@
 
 (function() {
   // ─── EDITE AQUI após publicar o backend ──────────────────────────────────
-  const PRODUCTION_API_URL = 'https://boutiquedascarnesjoia01.onrender.com';
+  const PRODUCTION_API_URL = '';
   // ─────────────────────────────────────────────────────────────────────────
 
   const API_BASE_URL = (() => {
-    const host = window.location.hostname;
-    const isLocal = host === 'localhost' || host === '127.0.0.1';
+    const host = String(window.location.hostname || '');
+    const origin = window.location.origin.replace(/\/+$/, '');
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+    const isPrivateIpv4 = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(host);
+    const isLanHost = isPrivateIpv4 || host.endsWith('.local');
 
-    // Mantem localhost apenas no ambiente de desenvolvimento local.
-    if (isLocal) {
-      return 'http://localhost:3000';
+    if (isLocalHost || isLanHost) {
+      return origin;
     }
 
     const productionUrl = PRODUCTION_API_URL.trim().replace(/\/+$/, '');
-    // Em acesso por IP local (ex.: celular na mesma rede), usa a origem atual.
-    return productionUrl || window.location.origin.replace(/\/+$/, '');
+    return productionUrl || origin;
   })();
 
   // Exporta a configuração globalmente
