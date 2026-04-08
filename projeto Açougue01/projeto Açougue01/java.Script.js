@@ -5,7 +5,7 @@
   // Utiliza configuração centralizada em config.js
   const WHATSAPP_NUMBER = window.APP_CONFIG?.WHATSAPP_NUMBER || "5512991307272";
   const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || (() => {
-    const productionUrl = "https://boutiquedascarneszedascarnes01.onrender.com";
+    const productionUrl = "https://boutiquedascarnesjoia01.onrender.com";
     const host = window.location.hostname;
     const isLocal = host === "localhost" || host === "127.0.0.1";
     return isLocal ? "http://localhost:3000" : productionUrl;
