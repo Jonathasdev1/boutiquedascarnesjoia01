@@ -11,15 +11,15 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 [[redirects]]
-  # Redireciona todas as routes para index.html (para manter navegação SPA)
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
   # Admin pages também para index.html
   from = "/admin"
   to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  # Redireciona todas as routes para index.html (para manter navegação SPA)
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -27,20 +27,20 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 [[headers]]
-  # Cache para assets (imagens, CSS)
+  # Como os arquivos nao possuem hash no nome, mantenha cache curto para evitar versao antiga.
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=300, must-revalidate"
 
 [[headers]]
   for = "/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=300, must-revalidate"
 
 [[headers]]
   for = "/imagens_projeto_acougue/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=300, must-revalidate"
 
 [[headers]]
   # Sem cache para HTML (sempre pega versão nova)

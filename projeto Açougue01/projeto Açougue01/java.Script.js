@@ -5,10 +5,10 @@
   // Utiliza configuração centralizada em config.js
   const WHATSAPP_NUMBER = window.APP_CONFIG?.WHATSAPP_NUMBER || "5512991307272";
   const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || (() => {
+    const productionUrl = "https://boutiquedascarneszedascarnes01.onrender.com";
     const host = window.location.hostname;
-    const isFile = window.location.protocol === "file:";
     const isLocal = host === "localhost" || host === "127.0.0.1";
-    return isLocal || isFile ? "http://localhost:3000" : "";
+    return isLocal ? "http://localhost:3000" : productionUrl;
   })();
   const API_ENABLED = window.APP_CONFIG?.API_ENABLED ?? Boolean(API_BASE_URL);
 
@@ -85,7 +85,7 @@
     frango: "imagens_projeto_acougue/Pasta_Frango/coxasobrecoxa.jpeg",
     rotisseria: "imagens_projeto_acougue/Rotisseria/costelaRecheadaAssada.jpeg",
     conveniencia: "imagens_projeto_acougue/Conveniencia/Oleo.jpeg",
-    geral: "imagens_projeto_acougue/Apresentacao/imagem.logo.joia.jpeg.png",
+    geral: "imagens_projeto_acougue/Apresentacao/meulogo.jpeg.png",
   };
 
   const getSectionProductsContainer = (categoria) => {
@@ -880,7 +880,7 @@
         timeStyle: "short",
       });
 
-      let mensagem = "*🥩 Pedido - Boutique das Carnes Joia*\n\n";
+      let mensagem = "*🥩 Pedido - Boutique das Carnes Ze das carnes*\n\n";
       mensagem += `*Data/Hora:* ${dataHoraPedido}\n`;
       mensagem += `*Cliente:* ${clienteNome}\n`;
       mensagem += `*Telefone:* ${clienteTelefone}\n`;
@@ -1036,7 +1036,7 @@
       timeStyle: "short",
     });
 
-    let mensagem = "*🥩 Pedido - Boutique das Carnes Joia*\n\n";
+    let mensagem = "*🥩 Pedido - Boutique das Carnes Ze das carnes*\n\n";
     if (numeroPedido !== null) {
       mensagem += `*Nº Pedido:* ${String(numeroPedido).padStart(3, "0")}\n`;
     }

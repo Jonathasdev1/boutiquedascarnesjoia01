@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Admin - Boutique das Carnes Joia</title>
+  <title>Painel Admin - Boutique das Carnes Ze das carnes</title>
   <style>
     * {
       margin: 0;
@@ -444,7 +444,7 @@
   <div id="login-overlay">
     <div class="login-box">
       <h2>🔐 Acesso Restrito</h2>
-      <p>Painel Administrativo<br>Boutique das Carnes e Conveniência Joia</p>
+      <p>Painel Administrativo<br>Boutique das Carnes e Conveniência Ze das carnes</p>
       <input type="password" id="login-senha" placeholder="Digite a senha de administrador"
         onkeydown="if(event.key==='Enter')fazerLogin()">
       <div class="login-erro" id="login-erro"></div>
@@ -455,10 +455,11 @@
   <div class="container">
     <div class="header">
       <h1>📦 Painel Administrativo</h1>
-      <p>Boutique das Carnes e Conveniência Joia - Gerenciamento de Estoque</p>
+      <p>Boutique das Carnes e Conveniência Ze das carnes - Gerenciamento de Estoque</p>
       <div class="header-actions">
         <button class="btn-exportar" onclick="exportarDados('csv')">⬇ Exportar CSV</button>
         <button class="btn-exportar" onclick="exportarDados('xlsx')">⬇ Exportar Excel</button>
+        <button class="btn-exportar" style="background:rgba(255,200,0,0.15); border-color:rgba(255,220,80,0.8); color:#ffe066;" onclick="exportarPedidosDia()">📅 Pedidos do Dia</button>
         <button class="btn-sair" onclick="fazerLogout()">🚪 Sair</button>
       </div>
     </div>
@@ -619,12 +620,45 @@
         mostrarMensagem('❌ Erro ao exportar: ' + err.message, 'erro');
       }
     };
+
+    // ── Exportar apenas pedidos do dia corrente em Excel ─────────────────
+    // Como funciona:
+    //   1. Pega a data de hoje no formato AAAA-MM-DD (ex.: 2026-04-08)
+    //   2. Chama a rota /api/exportar-pedidos-dia?data=AAAA-MM-DD
+    //   3. O servidor devolve um .xlsx com aba de resumo e aba de itens
+    //   4. O navegador baixa o arquivo automaticamente
+    // Para exportar outro dia, passe a data como parâmetro: exportarPedidosDia('2026-04-07')
+    const exportarPedidosDia = async (dataEspecifica) => {
+      try {
+        // Se não passar data, usa hoje
+        const data = dataEspecifica || new Date().toISOString().slice(0, 10);
+        mostrarMensagem(`📅 Gerando relatório de pedidos de ${data}...`, 'sucesso');
+        const res = await fetchAdmin(`${API_BASE_URL}/api/exportar-pedidos-dia?data=${data}`);
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || 'Falha ao gerar relatório');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `pedidos_${data}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        mostrarMensagem(`✅ Relatório de pedidos de ${data} baixado com sucesso!`, 'sucesso');
+      } catch (err) {
+        mostrarMensagem('❌ Erro ao exportar pedidos do dia: ' + err.message, 'erro');
+      }
+    };
     // ───────────────────────────────────────────────────────────────────
 
     const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || (() => {
+      const productionUrl = "https://boutiquedascarneszedascarnes01.onrender.com";
       const host = window.location.hostname;
       const isLocal = host === "localhost" || host === "127.0.0.1";
-      return isLocal ? "http://localhost:3000" : "";
+      return isLocal ? "http://localhost:3000" : productionUrl;
     })();
 
     let dadosAtual = [];

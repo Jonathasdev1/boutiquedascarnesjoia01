@@ -1,8 +1,8 @@
 /**
  * Configuração centralizada da API para o frontend
  *
- * DESENVOLVIMENTO : localhost:3000 detectado automaticamente
- * PRODUÇÃO        : altere PRODUCTION_API_URL abaixo com a URL do Render/Railway
+ * DESENVOLVIMENTO : localhost:3000 (quando abrir em localhost)
+ * PRODUÇÃO        : URL principal definida em PRODUCTION_API_URL
  *
  * Depois de publicar o backend no Render/Railway, troque a linha:
  *   const PRODUCTION_API_URL = '';
@@ -13,15 +13,15 @@
 
 (function() {
   // ─── EDITE AQUI após publicar o backend ──────────────────────────────────
-  const PRODUCTION_API_URL = 'https://boutiquedascarnesjoia01-2.onrender.com';
+  const PRODUCTION_API_URL = 'https://boutiquedascarneszedascarnes01.onrender.com';
   // ─────────────────────────────────────────────────────────────────────────
 
   const API_BASE_URL = (() => {
     const host = window.location.hostname;
-    const isFile = window.location.protocol === 'file:';
     const isLocal = host === 'localhost' || host === '127.0.0.1';
 
-    if (isLocal || isFile) {
+    // Mantem localhost apenas no ambiente de desenvolvimento local.
+    if (isLocal) {
       return 'http://localhost:3000';
     }
 
