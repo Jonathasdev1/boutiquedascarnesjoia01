@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Boutique das Carnes e Conveniência Zé das Carnes</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="style.css?v=20260408-6">
 </head>
 <body>
 
@@ -41,18 +42,14 @@
 
   <button id="btn-carrinho-fixo" type="button">Ir para Carrinho / Finalizar</button>
 
-  <!-- Galeria de fotos da loja -->
+    <!-- Galeria de fotos da loja (W3.CSS) -->
   <section class="galeria-internas" aria-label="Galeria da loja">
-    <button class="slider-btn prev" type="button" aria-label="Imagem anterior">&#10094;</button>
-    <div class="slider-track">
-      <img class="slider-image ativo" src="imagens_projeto_acougue/Apresentacao/imagemloja.jpeg.jpeg" alt="Ambiente da loja">
-      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna1.jpeg.jpeg" alt="Ambiente interno 1">
-      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna2.jpeg.jpeg" alt="Ambiente interno 2">
-      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna3.jpeg.jpeg" alt="Ambiente interno 3">
-      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna4.jpeg.jpeg" alt="Ambiente interno 4">
-      <img class="slider-image" src="imagens_projeto_acougue/Apresentacao/interna5.jpeg" alt="Ambiente interno 5">
+    <div class="w3-content w3-display-container w3-center" id="galeria-slider">
+      <img class="w3-slide w3-image w3-animate-fading" src="/imagens_projeto_acougue/Apresentacao/meulogo.jpeg.png?v=20260408-6" alt="Logo Boutique das Carnes">
+      <img class="w3-slide w3-image w3-animate-fading" src="/imagens_projeto_acougue/Apresentacao/imagemloja.jpeg.jpeg?v=20260408-6" alt="Ambiente da loja" style="display:none">
+      <button class="w3-button w3-black w3-display-left w3-round" id="galeria-prev" type="button" aria-label="Anterior">&#10094;</button>
+      <button class="w3-button w3-black w3-display-right w3-round" id="galeria-next" type="button" aria-label="Proxima">&#10095;</button>
     </div>
-    <button class="slider-btn next" type="button" aria-label="Próxima imagem">&#10095;</button>
   </section>
 <!--*****************************************************************************************************-->
   <!-- Seção Bovino -->

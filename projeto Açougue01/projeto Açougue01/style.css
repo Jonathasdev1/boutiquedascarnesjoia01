@@ -91,29 +91,18 @@ body {
   padding: 20px;
 }
 
-.slider-track {
-  width: min(100%, 900px);
-  height: 320px;
-  position: relative;
+/* Galeria W3.CSS */
+.galeria-internas .w3-content {
+  max-width: 900px;
+  border-radius: 10px;
   overflow: hidden;
-  border-radius: 10px;
-  background: #111;
 }
 
-.slider-image {
+.galeria-internas .w3-slide {
+  border-radius: 10px;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  border-radius: 10px;
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.slider-image.ativo {
-  opacity: 1;
+  height: auto;
+  display: block;
 }
 
 .slider-btn {
@@ -544,15 +533,6 @@ body {
   .secao-carnes,
   .sobre {
     scroll-margin-top: 145px;
-  }
-
-  .slider-track {
-    height: 220px;
-  }
-
-  .slider-btn {
-    width: 34px;
-    height: 34px;
   }
 
   #carrinho-container {

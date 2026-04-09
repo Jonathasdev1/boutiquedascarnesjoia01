@@ -1310,44 +1310,31 @@
   bootstrapProductSync();
   startProductsAutoRefresh();
 
-  const galeria = document.querySelector(".galeria-internas");
-  if (galeria) {
-    const imagens = Array.from(galeria.querySelectorAll(".slider-image"));
-    const btnPrev = galeria.querySelector(".slider-btn.prev");
-    const btnNext = galeria.querySelector(".slider-btn.next");
+  // Slideshow W3.CSS
+  (function () {
+    const slides = Array.from(document.querySelectorAll(".w3-slide"));
+    const btnPrev = document.getElementById("galeria-prev");
+    const btnNext = document.getElementById("galeria-next");
+    if (!slides.length) return;
 
-    if (imagens.length > 1) {
-      let indiceAtual = 0;
-      let intervalo = null;
+    let idx = 0;
+    let timer = null;
 
-      const mostrarSlide = (novoIndice) => {
-        imagens[indiceAtual].classList.remove("ativo");
-        indiceAtual = (novoIndice + imagens.length) % imagens.length;
-        imagens[indiceAtual].classList.add("ativo");
-      };
+    const mostrar = (novoIdx) => {
+      slides[idx].style.display = "none";
+      idx = (novoIdx + slides.length) % slides.length;
+      slides[idx].style.display = "block";
+    };
 
-      const iniciarAutoSlide = () => {
-        clearInterval(intervalo);
-        intervalo = setInterval(() => {
-          mostrarSlide(indiceAtual + 1);
-        }, 5000);
-      };
+    const autoSlide = () => {
+      clearInterval(timer);
+      timer = setInterval(() => mostrar(idx + 1), 5000);
+    };
 
-      if (btnPrev) {
-        btnPrev.addEventListener("click", () => {
-          mostrarSlide(indiceAtual - 1);
-          iniciarAutoSlide();
-        });
-      }
-
-      if (btnNext) {
-        btnNext.addEventListener("click", () => {
-          mostrarSlide(indiceAtual + 1);
-          iniciarAutoSlide();
-        });
-      }
-
-      iniciarAutoSlide();
+    if (slides.length > 1) {
+      if (btnPrev) { btnPrev.style.display = ""; btnPrev.addEventListener("click", () => { mostrar(idx - 1); autoSlide(); }); }
+      if (btnNext) { btnNext.style.display = ""; btnNext.addEventListener("click", () => { mostrar(idx + 1); autoSlide(); }); }
+      autoSlide();
     }
-  }
+  })();
 })();
